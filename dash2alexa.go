@@ -28,9 +28,6 @@ import (
 )
 
 var cfgFile string
-var gender string
-var language string
-var backend string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -57,9 +54,6 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dash2alexa)")
-	RootCmd.PersistentFlags().StringVarP(&gender, "gender", "g", "female", "Gender of voice to use (male or female)")
-	RootCmd.PersistentFlags().StringVarP(&language, "language", "l", "de", "Language to use ('de' or 'en')")
-	RootCmd.PersistentFlags().StringVarP(&backend, "backend", "b", "polly", "Service type ('ivona' or 'polly')")
 }
 
 func initConfig() {
@@ -70,10 +64,6 @@ func initConfig() {
 	viper.SetConfigName(".dash2alexa") // name of config file (without extension)
 	viper.AddConfigPath("$HOME/")      // adding home directory as first search path
 	viper.AutomaticEnv()               // read in environment variables that match
-
-	viper.BindPFlag("gender", RootCmd.PersistentFlags().Lookup("gender"))
-	viper.BindPFlag("language", RootCmd.PersistentFlags().Lookup("language"))
-	viper.BindPFlag("backend", RootCmd.PersistentFlags().Lookup("backend"))
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
@@ -178,8 +168,12 @@ func speakOptions() *speak.Options {
 
 func speakAlexaCommands(command alexaCommand) {
 	log.Printf("Button '%s' pushed [%s]", command.name, command.mac)
+	keyword := viper.GetString("keyword")
+	if keyword == "" {
+		keyword = "Alexa"
+	}
 	for _, msg := range command.messages {
-		speak.Speak("Alexa, "+msg, speakOptions())
+		speak.Speak(keyword+", "+msg, speakOptions())
 		time.Sleep(time.Duration(command.wait) * time.Second)
 	}
 }
