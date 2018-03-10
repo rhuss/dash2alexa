@@ -51,9 +51,7 @@ func main() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dash2alexa)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dash2alexa.yml)")
 }
 
 func initConfig() {
@@ -81,6 +79,9 @@ type alexaCommand struct {
 }
 
 func watch(cmd *cobra.Command, args []string) {
+
+	initConfig()
+
 	netInterface := viper.GetString("interface")
 	if netInterface == "" {
 		netInterface = "en3"
