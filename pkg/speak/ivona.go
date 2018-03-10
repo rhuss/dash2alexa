@@ -28,7 +28,7 @@ func IvonaSpeak(text string, options *Options) error {
 	}
 	defer os.Remove(mp3.Name())
 
-	playCommand := getPlayCommand(mp3.Name())
+	playCommand := getPlayCommand(options.Player,mp3.Name())
 	_, err = playCommand.CombinedOutput()
 	if err != nil {
 		return err

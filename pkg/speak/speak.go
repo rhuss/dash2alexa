@@ -4,6 +4,8 @@ import (
 	"log"
 	"runtime"
 	"os/exec"
+	"fmt"
+	"strings"
 )
 
 // Speak converts a text to audio and the send it out via audio
@@ -19,8 +21,12 @@ func Speak(text string, options *Options) error {
 	return nil
 }
 
-
-func getPlayCommand(mp3 string) *exec.Cmd {
+func getPlayCommand(player, mp3 string) *exec.Cmd {
+	if player != "" {
+		parts := strings.Split(fmt.Sprintf(player, mp3), " ")
+		return exec.Command(parts[0], parts[1:]...)
+	}
+	// Check for default:
 	if runtime.GOOS == "darwin" {
 		return exec.Command("afplay", mp3)
 	}
@@ -34,4 +40,5 @@ type Options struct {
 	Gender   string
 	Language string
 	Backend  string
+	Player   string
 }

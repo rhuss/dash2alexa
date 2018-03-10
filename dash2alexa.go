@@ -169,16 +169,17 @@ func speakOptions() *speak.Options {
 	return &speak.Options{
 		Access:   access,
 		Secret:   secret,
-		Gender:   gender,
-		Language: language,
-		Backend:  backend,
+		Gender:   viper.GetString("gender"),
+		Language: viper.GetString("language"),
+		Backend:  viper.GetString("backend"),
+		Player:   viper.GetString("player"),
 	}
 }
 
 func speakAlexaCommands(command alexaCommand) {
 	log.Printf("Button '%s' pushed [%s]", command.name, command.mac)
 	for _, msg := range command.messages {
-		speak.Speak("Alexa, " + msg, speakOptions())
+		speak.Speak("Alexa, "+msg, speakOptions())
 		time.Sleep(time.Duration(command.wait) * time.Second)
 	}
 }

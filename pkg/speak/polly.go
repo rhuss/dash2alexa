@@ -36,7 +36,7 @@ func PollySpeak(text string, options *Options) error {
 	}
 	defer os.Remove(mp3.Name())
 
-	playCommand := getPlayCommand(mp3.Name())
+	playCommand := getPlayCommand(options.Player, mp3.Name())
 	_, err = playCommand.CombinedOutput()
 	if err != nil {
 		return err
@@ -59,5 +59,5 @@ func getPollyVoice(language string, gender string) (string, error) {
 		}
 		return golang_tts.Joey, nil
 	}
-	return "", fmt.Errorf("Invalid language %s", language)
+	return "", fmt.Errorf("invalid language %s", language)
 }
