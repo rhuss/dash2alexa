@@ -69,16 +69,6 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
-
-	if logFile != "" {
-		f, err := os.OpenFile(logFile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
-		if err != nil {
-			log.Fatalf("error opening file: %v", err)
-		}
-		defer f.Close()
-
-		log.SetOutput(f)
-	}
 }
 
 // ================================================================================================
@@ -93,6 +83,15 @@ type alexaCommand struct {
 func watch(cmd *cobra.Command, args []string) {
 
 	initConfig()
+
+	if logFile != "" {
+		f, err := os.OpenFile(logFile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalf("error opening file: %v", err)
+		}
+		defer f.Close()
+		log.SetOutput(f)
+	}
 
 	netInterface := viper.GetString("interface")
 	if netInterface == "" {
