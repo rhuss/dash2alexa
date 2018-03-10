@@ -28,6 +28,7 @@ import (
 )
 
 var cfgFile string
+var logFile string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -52,6 +53,7 @@ func main() {
 
 func init() {
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.dash2alexa.yml)")
+	RootCmd.PersistentFlags().StringVar(&logFile, "log", "", "log output (default: log to standard out")
 }
 
 func initConfig() {
@@ -66,6 +68,16 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+
+	if logFile != "" {
+		f, err := os.OpenFile(logFile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalf("error opening file: %v", err)
+		}
+		defer f.Close()
+
+		log.SetOutput(f)
 	}
 }
 
