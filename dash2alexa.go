@@ -24,6 +24,7 @@ import (
 	"errors"
 	"log"
 	"net"
+	"time"
 )
 
 var cfgFile string
@@ -108,8 +109,9 @@ func watch(cmd *cobra.Command, args []string) {
 	var buttonChans = [] *chan dash.ButtonEvent{}
 	var buttonCommands = make(map[string]alexaCommand)
 
-	buttons := viper.Get("buttons").([]map[string]interface{})
-	for _, button := range buttons {
+	buttons := viper.Get("buttons").([]interface{})
+	for _, buttonMap := range buttons {
+		button := buttonMap.(map[interface{}]interface{})
 		mac := button["mac"].(string)
 		if mac == "" {
 			panic("No mac given for button configuration")
@@ -122,7 +124,7 @@ func watch(cmd *cobra.Command, args []string) {
 			name:     button["name"].(string),
 			mac:      mac,
 			wait:     wait,
-			messages: button["messages"].([]string),
+			messages: convertToStringSlice(button["messages"].([]interface{})),
 		}
 		buttonChans = append(buttonChans, dash.WatchButton(iface, mac))
 	}
@@ -141,17 +143,20 @@ func watch(cmd *cobra.Command, args []string) {
 	for {
 		select {
 		case buttonEvent := <-agg:
-			callAlexa(buttonCommands[buttonEvent.MacAddress])
+			speakAlexaCommands(buttonCommands[buttonEvent.MacAddress])
 		}
 	}
+}
+func convertToStringSlice(strings []interface{}) []string {
+	ret := make([]string, len(strings))
+	for i, val := range strings {
+		ret[i] = val.(string)
+	}
+	return ret
 }
 
 // speakOptions create the options for the text to speech service
 func speakOptions() *speak.Options {
-	speechConfig := viper.GetStringMapString("backend")
-	if speechConfig == nil {
-		log.Fatal("No authentication for speech backend configured")
-	}
 	access := viper.GetString("access")
 	if access == "" {
 		log.Fatal("No access for speech backend found")
@@ -170,11 +175,11 @@ func speakOptions() *speak.Options {
 	}
 }
 
-func callAlexa(command alexaCommand) {
-	log.Print("Button pushed")
+func speakAlexaCommands(command alexaCommand) {
+	log.Printf("Button '%s' pushed [%s]", command.name, command.mac)
 	for _, msg := range command.messages {
-		speak.Speak(msg, speakOptions())
-
+		speak.Speak("Alexa, " + msg, speakOptions())
+		time.Sleep(time.Duration(command.wait) * time.Second)
 	}
 }
 
