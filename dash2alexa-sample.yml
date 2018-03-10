@@ -9,7 +9,7 @@ access: ".........."
 secret: ".........."
 
 # Network interface to listen for ARP requests when a Dash button is pressed
-interface: "en3"
+interface: "wlan0"
 
 # Language ("de" or "en")
 language: "de"
