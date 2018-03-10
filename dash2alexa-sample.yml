@@ -1,0 +1,38 @@
+# Sample configuration file
+# Adapt and copy it to ~/.dash2alexa.yml
+
+# "polly" or "ivona" Text2Speech service
+backend: "polly"
+
+# Access and secret for accessing the services
+access: ".........."
+secret: ".........."
+
+# Network interface to listen for ARP requests when a Dash button is pressed
+interface: "en3"
+
+# Language ("de" or "en")
+language: "de"
+
+# Gender which can be either "male" or "female"
+gender: "male"
+
+# Keyword to use for alex
+keyword: "Alexa"
+
+# Player to use when playing an mp3 sound file
+player: "mpeg123"
+
+# List of Dash Buttons with associated Alexa command
+buttons:
+  # Symbolic name
+- name: "heineken"
+  # Mac adress of Dash button
+  mac: "ac:63:be:00:11:22"
+  # How many seconds to wait between Alexa commands
+  wait: 4
+
+  # Messages to talk
+  messages:
+    - "Lautstärke 4"
+    - "Spiele Bayern 3"
