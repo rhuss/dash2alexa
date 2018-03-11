@@ -185,7 +185,9 @@ func speakAlexaCommands(command alexaCommand) {
 		keyword = "Alexa"
 	}
 	for _, msg := range command.messages {
-		speak.Speak(keyword+", "+msg, speakOptions())
+		if err := speak.Speak(keyword+", "+msg, speakOptions()); err != nil {
+			log.Printf("Error while sending alexa commands: %s", err)
+		}
 		time.Sleep(time.Duration(command.wait) * time.Second)
 	}
 }
