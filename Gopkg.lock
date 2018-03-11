@@ -20,8 +20,8 @@
     "layers",
     "pcap"
   ]
-  revision = "11c65f1ca9081dfea43b4f9643f5c155583b73ba"
-  version = "v1.1.14"
+  revision = "b83f94714c36e30ce851be1d5a0a5226f9f1bca4"
+  version = "v1.1.12"
 
 [[projects]]
   branch = "master"
@@ -79,7 +79,7 @@
   branch = "master"
   name = "github.com/rhuss/dash"
   packages = ["."]
-  revision = "8c6946e42e9734be347a6473a710d1b7cb77d24e"
+  revision = "8633a84a6f5f2603cf725e22b8f8f229bc06bd78"
 
 [[projects]]
   name = "github.com/spf13/afero"

@@ -25,27 +25,10 @@
 #   unused-packages = true
 
 
-[[constraint]]
-  name = "github.com/jpadilla/ivona-go"
-  version = "0.1.0"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/leprosus/golang-tts"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/rhuss/dash"
-
-[[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.1"
-
-[[constraint]]
-  name = "github.com/spf13/viper"
-  version = "1.0.0"
-
-
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/google/gopacket"
+  version = "=v1.1.12"
