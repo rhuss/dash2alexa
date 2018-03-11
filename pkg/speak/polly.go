@@ -53,7 +53,7 @@ func getPollyVoice(language string, gender string) (string, error) {
 		return  golang_tts.Hans, nil
 	}
 
-	if language == "en" {
+	if language == "en" || language == "" {
 		if gender == "female" {
 			return golang_tts.Joanna, nil
 		}
