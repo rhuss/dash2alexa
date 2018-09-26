@@ -79,6 +79,7 @@ type alexaCommand struct {
 	name     string
 	mac      string
 	wait     int
+	vanilla  bool
 	messages []string
 }
 
@@ -120,14 +121,21 @@ func watch(cmd *cobra.Command, args []string) {
 		if mac == "" {
 			panic("No mac given for button configuration")
 		}
-		wait := button["wait"].(int)
-		if wait == 0 {
-			wait = 4
+		var wait = 0
+		if waitO, ok := button["wait"]; ok {
+			wait = waitO.(int)
 		}
+
+		var vanilla = false
+		if vanillaO, ok := button["vanilla"]; ok {
+			vanilla = vanillaO.(bool)
+		}
+
 		buttonCommands[mac] = alexaCommand{
 			name:     button["name"].(string),
 			mac:      mac,
 			wait:     wait,
+			vanilla:  vanilla,
 			messages: convertToStringSlice(button["messages"].([]interface{})),
 		}
 		buttonChans = append(buttonChans, dash.WatchButton(iface, mac))
@@ -187,7 +195,11 @@ func speakAlexaCommands(command alexaCommand) {
 		keyword = "Alexa"
 	}
 	for _, msg := range command.messages {
-		if err := speak.Speak(keyword+", "+msg, speakOptions()); err != nil {
+		txt := msg
+		if !command.vanilla {
+			txt = keyword + ", " + msg
+		}
+		if err := speak.Speak(txt, speakOptions()); err != nil {
 			log.Printf("Error while sending alexa commands: %s", err)
 		}
 		time.Sleep(time.Duration(command.wait) * time.Second)
